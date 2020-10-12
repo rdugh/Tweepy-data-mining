@@ -2,6 +2,7 @@ import tweepy
 import Twitter_credential
 import numpy as np
 import pandas as pd
+import datetime
 
 '''
 class TwitterAuthenticator():
@@ -15,7 +16,7 @@ class MyStreamListener(tweepy.StreamListener):
         self.num_tweets=0
 
     def on_data(self,data):
-        print(data)
+        #print(data)
         try:
             with open(self.fetched_tweets_filename,'a') as tf:
                 tf.write(data)
@@ -65,7 +66,8 @@ class TwitterStreamer():
 
 
 if __name__=='__main__':
-    hash_tag_list=['Trump']
-    fetched_tweets_filename='Testtweets.json'
+    hash_tag_list=['SDGs','可持续发展']
+    d=datetime.datetime.now()
+    fetched_tweets_filename='Testtweets'+str(d.year)+str(d.month)+str(d.day)+'_'+str(d.hour)+str(d.minute) +'.json'
     twitter_streamer=TwitterStreamer()
     twitter_streamer.stream_tweets(fetched_tweets_filename,hash_tag_list)
