@@ -7,7 +7,12 @@ import datetime
 '''
 class TwitterAuthenticator():
     def authenticate_twitter_app(self):'''
-        
+
+def w_file_info(info):
+    with open('File Information','a') as E:
+        E.write(str(datetime.datetime.now()))
+        E.write(str(info))        
+
 #creating a stream listener
 class MyStreamListener(tweepy.StreamListener):
     '''Basic listener class that just print received tweets to stdout.'''
@@ -22,6 +27,7 @@ class MyStreamListener(tweepy.StreamListener):
                 tf.write(data)
             return True
         except BaseException as e:
+            w_file_info(str(e))
             print('Error on data:%s' % str(e))
             return True
 
@@ -37,6 +43,7 @@ class MyStreamListener(tweepy.StreamListener):
 
     def on_error(self, status_code):
         print(status_code)
+        w_file_info(status_code)
         if status_code == 420:
             #returning False in on_error disconnects the stream
             return False
@@ -66,8 +73,9 @@ class TwitterStreamer():
 
 
 if __name__=='__main__':
-    hash_tag_list=['SDGs','可持续发展']
+    hash_tag_list=['#SDGs','#DayOfTheGirl','#ZeroHunger','#ForNature']
     d=datetime.datetime.now()
     fetched_tweets_filename='Testtweets'+str(d.year)+str(d.month)+str(d.day)+'_'+str(d.hour)+str(d.minute) +'.json'
     twitter_streamer=TwitterStreamer()
     twitter_streamer.stream_tweets(fetched_tweets_filename,hash_tag_list)
+    #Use control+C to cut your run
