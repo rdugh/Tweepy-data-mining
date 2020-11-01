@@ -90,7 +90,7 @@ class TwitterStreamer():
 
 
 if __name__=='__main__':
-    hash_tag_list=['#SDGs','#DayOfTheGirl','#ZeroHunger','#ForNature']
+    hash_tag_list=['#SDGs','#SDG','#SDGoals','#Act4SDGs','#2030Agenda','sdg1', 'sdg2', 'sdg3', 'sdg4', 'sdg5', 'sdg6', 'sdg7', 'sdg8', 'sdg9', 'sdg10', 'sdg11', 'sdg12', 'sdg13', 'sdg14', 'sdg15', 'sdg16', 'sdg17','SDG1', 'SDG2', 'SDG3', 'SDG4', 'SDG5', 'SDG6', 'SDG7', 'SDG8', 'SDG9', 'SDG10', 'SDG11', 'SDG12', 'SDG13', 'SDG14', 'SDG15', 'SDG16', 'SDG17']
     d=datetime.datetime.now()
     fetched_tweets_filename='Testtweets'+str(d.year)+str(d.month)+str(d.day)+'_'+str(d.hour)+str(d.minute) +'.json'
     twitter_streamer=TwitterStreamer()
