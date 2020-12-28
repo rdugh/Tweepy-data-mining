@@ -1,16 +1,20 @@
 import tweepy
 import Twitter_credential
-import numpy as np
-import pandas as pd
 import datetime
+import time
+from time import gmtime, strftime
 
 '''
 class TwitterAuthenticator():
     def authenticate_twitter_app(self):'''
 
-def w_file_info(info):
-    with open('File Information','a') as E:
-        E.write(str(datetime.datetime.now()))
+def w_file_info(info,filename='current'):
+    d=datetime.datetime.now()
+    fileinfo='FileInformation'+str(d.year)+str(d.month)+str(d.day)+'_'+str(d.hour) +'.txt'
+    with open(fileinfo,'a') as E:
+        print('Something happended to file ',filename,'I am writing a file...\n')
+        E.write(str(datetime.datetime.now())+'\n')
+        E.write(str(filename)+':')
         E.write(str(info))        
 
 #creating a stream listener
@@ -27,11 +31,14 @@ class MyStreamListener(tweepy.StreamListener):
                 tf.write(data)
             return True
         except BaseException as e:
-            w_file_info(str(e))
+            w_file_info(str(e),self.fetched_tweets_filename)
             print('Error on data:%s' % str(e))
             return True
+        return True
 
-    def on_status(self, status):
+    '''def on_status(self, status):
+        print(status)
+        return
         record={'Text':status.text,'Created At':status.created_at}
         print(record)
         self.num_tweets+=1
@@ -39,14 +46,23 @@ class MyStreamListener(tweepy.StreamListener):
             #collection.insert(record)
             return True
         else:
-            return False
+            return False'''
 
     def on_error(self, status_code):
         print(status_code)
         w_file_info(status_code)
         if status_code == 420:
             #returning False in on_error disconnects the stream
-            return False
+            time.sleep(10)
+
+        if status_code==429:
+            print('Waiting on limit')
+            w_file_info('Waiting on limit 16min')
+            time.sleep(15*60+1)
+        else:
+            print('Unexpected. Will retry in 10 s.')
+            w_file_info('Unexpected. Will retry in 10 s.')
+            time.sleep(10)
 
         # returning non-False reconnects the stream, with backoff.
 
@@ -66,10 +82,11 @@ class TwitterStreamer():
 
         #creating a stream
         myStreamListener = MyStreamListener(fetched_tweets_filename)
-        myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener)
+        myStream = tweepy.Stream(auth=api.auth, listener=myStreamListener, tweet_mode='extended')
 
         #Starting a stream
-        myStream.filter(track=hash_tag_list)
+        myStream.filter(track=hash_tag_list,is_async=True)
+        #stream.filter(languages=["en"], track=search_words, is_async=True) 
 
 
 if __name__=='__main__':
@@ -78,4 +95,5 @@ if __name__=='__main__':
     fetched_tweets_filename='Testtweets'+str(d.year)+str(d.month)+str(d.day)+'_'+str(d.hour)+str(d.minute) +'.json'
     twitter_streamer=TwitterStreamer()
     twitter_streamer.stream_tweets(fetched_tweets_filename,hash_tag_list)
+    print('Start Running, Use ctrl+C to stop')
     #Use control+C to cut your run
