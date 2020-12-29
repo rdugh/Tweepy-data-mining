@@ -26,12 +26,13 @@ def P(T):
                 for ii in locdict[k][0]['address_components']:
                     if 'country' in ii['types']:
                         locdict[k]=ii['long_name']
+                    elif len(locdict[k])>1:
+                        if 'address_components' in locdict[k][1]:
+                            for ii in locdict[k][1]['address_components']:
+                                if 'country' in ii['types']:
+                                    locdict[k]=ii['long_name']
                     else:
-                        if len(locdict[k])>1:
-                            if 'address_components' in locdict[k][1]:
-                                for ii in locdict[k][1]['address_components']:
-                                    if 'country' in ii['types']:
-                                        locdict[k]=ii['long_name']
+                        del locdict[k]
             else:
                 del locdict[k]
         else:
