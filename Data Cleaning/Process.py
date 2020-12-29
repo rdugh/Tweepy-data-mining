@@ -26,13 +26,15 @@ def P(T):
                 for ii in locdict[k][0]['address_components']:
                     if 'country' in ii['types']:
                         locdict[k]=ii['long_name']
-                    elif len(locdict[k])>1:
-                        if 'address_components' in locdict[k][1]:
-                            for ii in locdict[k][1]['address_components']:
-                                if 'country' in ii['types']:
-                                    locdict[k]=ii['long_name']
                     else:
                         del locdict[k]
+            elif len(locdict[k])>1:
+                if 'address_components' in locdict[k][1]:
+                    for ii in locdict[k][1]['address_components']:
+                        if 'country' in ii['types']:
+                            locdict[k]=ii['long_name']
+                        else:
+                            del locdict[k]
             else:
                 del locdict[k]
         else:
@@ -98,7 +100,7 @@ def P(T):
 
     # Generate User Information and hashtags
     T['id']=[i['id']for i in T['user']]
-    T['name']=[i['name']for i in T['user']]
+    #T['name']=[i['name']for i in T['user']]
     T['screen_name']=[i['screen_name'] for i in T['user']]
     T['url']=[i['url'] for i in T['user']]
     T['friends_count']=T['user'].apply(lambda x:x['friends_count'])
